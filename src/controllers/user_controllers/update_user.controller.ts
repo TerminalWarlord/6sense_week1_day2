@@ -2,16 +2,15 @@ import type { Request, Response } from "express";
 import z from "zod";
 import mongoose from "mongoose";
 import { User } from "../../models/user.js";
-import bcrypt from "bcrypt";
+import type { CustomRequest } from "../../middlewares/admin.middleware.js";
 
-export const patchUpdateUser = async (req: Request, res: Response) => {
+export const patchUpdateUser = async (req: CustomRequest, res: Response) => {
     const schema = z.object({
         userId: z.string(),
         fname: z.string().max(32).min(3).optional(),
         lname: z.string().max(32).min(3).optional(),
-        password: z.string().min(8).max(100).optional()
-    }).refine((val) => val.fname || val.lname || val.password, {
-        error: "Any one of the following should be passed: fname, lname, password!"
+    }).refine((val) => val.fname || val.lname, {
+        error: "Any one of the following should be passed: fname, lname!"
     });
     const parsedData = schema.safeParse({
         ...req.body,
@@ -26,20 +25,20 @@ export const patchUpdateUser = async (req: Request, res: Response) => {
     const {
         fname,
         lname,
-        password,
         userId
     } = parsedData.data;
     const userIdObjectId = new mongoose.Types.ObjectId(userId);
-    let updatedPassword;
-    if (password) {
-        updatedPassword = await bcrypt.hash(password, 5);
+    const currentUser = await User.findById(req.userId!);
+    if (!currentUser || (currentUser._id != userIdObjectId && currentUser?.userType !== "admin")) {
+        return res.status(403).json({
+            message: "You don't have permission to update this user"
+        })
     }
     await User.updateOne(
         { _id: userIdObjectId },
         {
             fname,
             lname,
-            password: updatedPassword
         }
     );
     res.json({
