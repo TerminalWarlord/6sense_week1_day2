@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import z from "zod";
-import { UserStatus, UserType } from "../../types/user.type.js";
 import { User } from "../../models/user.js";
 import bcrypt from "bcrypt";
 
@@ -8,8 +7,6 @@ export const postCreateUser = async (req: Request, res: Response) => {
     const schema = z.object({
         fname: z.string().max(32).min(3),
         lname: z.string().max(32).min(3),
-        userType: z.enum(UserType).default(UserType.user),
-        status: z.enum(UserStatus).default(UserStatus.active),
         email: z.email(),
         phone: z.string().max(14).min(11),
         password: z.string().min(8).max(100)
@@ -28,8 +25,6 @@ export const postCreateUser = async (req: Request, res: Response) => {
         lname,
         password,
         phone,
-        status,
-        userType
     } = parsedData.data;
     const user = await User.findOne({
         $or: [
@@ -52,8 +47,8 @@ export const postCreateUser = async (req: Request, res: Response) => {
         lname,
         email,
         phone,
-        status,
-        userType,
+        status: "inactive",
+        userType: "user",
         password: hashedPassword
     });
     res.status(201).json({
