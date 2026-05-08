@@ -33,6 +33,12 @@ export const postLoginUser = async (req: Request, res: Response) => {
     }
     const passwordMatches = await bcrypt.compare(password, user.password);
     if (passwordMatches) {
+        await User.updateOne({
+            _id: user._id
+        }, {
+            lastLoggedInAt: new Date(),
+            status: "active"
+        })
         const token = jwt.sign({ userId: user._id }, JWT_SECRET);
         return res.json({
             token,
