@@ -1,0 +1,10 @@
+export enum UserType {
+    admin = "admin",
+    user = "user",
+}
+
+export enum UserStatus {
+    active = "active",
+    inactive = "inactive",
+    banned = "banned"
+}
