@@ -1,0 +1,7 @@
+import { Router } from "express";
+import { postCreateUser } from "../controllers/user_controllers/create_user.controller.js";
+
+export const userRouter = Router();
+
+userRouter.post("/register", postCreateUser);
+userRouter.get("/login", () => { });
