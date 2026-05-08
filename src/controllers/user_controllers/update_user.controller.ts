@@ -29,7 +29,7 @@ export const patchUpdateUser = async (req: CustomRequest, res: Response) => {
     } = parsedData.data;
     const userIdObjectId = new mongoose.Types.ObjectId(userId);
     const currentUser = await User.findById(req.userId!);
-    if (!currentUser || (currentUser._id != userIdObjectId && currentUser?.userType !== "admin")) {
+    if (!currentUser || (currentUser._id !== userIdObjectId && currentUser?.userType !== "admin")) {
         return res.status(403).json({
             message: "You don't have permission to update this user"
         })
