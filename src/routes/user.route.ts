@@ -1,8 +1,12 @@
 import { Router } from "express";
 import { postCreateUser } from "../controllers/user_controllers/create_user.controller.js";
 import { patchUpdateUser } from "../controllers/user_controllers/update_user.controller.js";
+import { getUser } from "../controllers/user_controllers/get_user.controller.js";
+import { deleteUser } from "../controllers/user_controllers/delete_user.controller.js";
 
 export const userRouter = Router();
 
 userRouter.post("/register", postCreateUser);
 userRouter.patch("/update/:userId", patchUpdateUser);
+userRouter.get("/get_user/:userId", getUser);
+userRouter.delete("/delete/:userId", deleteUser);
