@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema({
         enum: ["active", "inactive", "banned"],
         default: "active"
     },
+    lastLoggedInAt: Date
 }, {
     timestamps: true
 })
