@@ -5,6 +5,7 @@ import { getUser } from "../controllers/user_controllers/get_user.controller.js"
 import { deleteUser } from "../controllers/user_controllers/delete_user.controller.js";
 import { getUsers } from "../controllers/user_controllers/get_users.controller.js";
 import { postLoginUser } from "../controllers/user_controllers/login_user.controller.js";
+import { adminMiddleware } from "../middlewares/admin.middleware.js";
 
 export const userRouter = Router();
 
@@ -13,4 +14,4 @@ userRouter.post("/login", postLoginUser);
 userRouter.patch("/update/:userId", patchUpdateUser);
 userRouter.get("/get_users/", getUsers);
 userRouter.get("/get_user/:userId", getUser);
-userRouter.delete("/delete/:userId", deleteUser);
+userRouter.delete("/delete/:userId", adminMiddleware, deleteUser);
