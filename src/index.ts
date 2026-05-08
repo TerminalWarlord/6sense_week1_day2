@@ -1,6 +1,6 @@
 import express from "express";
-import { config } from "dotenv";
-config();
+import "dotenv/config";
+import { connectDB } from "./lib/db.js";
 
 const PORT = Number(process.env.PORT) || 3000;
 const app = express();
@@ -14,6 +14,7 @@ app.get("/health", (req, res) => {
 });
 
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+    await connectDB();
     console.log(`App running at http://localhost:${PORT}`);
 });
