@@ -30,7 +30,7 @@ export const moderatorMiddleware = async (req: CustomRequest, res: Response, nex
             user: req.userId!,
         }).sort({ lastAccessedAt: -1 });
     }
-    if (!org || org.userType !== "user") {
+    if (!org || !(org.userType == "admin" || org.userType == "owner")) {
         return res.status(403).json({
             message: "You don't have sufficient permission"
         });
