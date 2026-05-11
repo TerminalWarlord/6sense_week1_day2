@@ -3,13 +3,14 @@ import mongoose from "mongoose";
 import { manageOrganizationSchema } from "../validations/organization.validation.js";
 import z from "zod";
 import { OrganizationMember } from "../models/organization_member.js";
+import type { UserType } from "../types/user.type.js";
 
 
 export interface CustomRequest extends Request {
     userId?: mongoose.Types.ObjectId
     organizationId?: mongoose.Types.ObjectId
 }
-export const adminMiddleware = async (req: CustomRequest, res: Response, next: NextFunction) => {
+export const adminMiddleware = (userType: UserType) => async (req: CustomRequest, res: Response, next: NextFunction) => {
     const parsedData = manageOrganizationSchema.safeParse({
         organizationId: req.params.organizationId
     });
@@ -32,7 +33,7 @@ export const adminMiddleware = async (req: CustomRequest, res: Response, next: N
             user: req.userId!,
         }).sort({ lastAccessedAt: -1 });
     }
-    if (!org || org.userType !== "admin") {
+    if (!org || (org.userType as UserType) !== userType) {
         return res.status(403).json({
             message: "You don't have sufficient permission"
         });
