@@ -20,14 +20,28 @@ export const adminMiddleware = async (req: CustomRequest, res: Response, next: N
         });
     }
     const orgId = new mongoose.Types.ObjectId(parsedData.data.organizationId);
-    const org = await OrganizationMember.findOne({
-        organization: orgId,
-        user: req.userId!
-    });
+    let org;
+    if (orgId) {
+        org = await OrganizationMember.findOne({
+            user: req.userId!,
+            organization: orgId
+        });
+    }
+    else {
+        org = await OrganizationMember.findOne({
+            user: req.userId!,
+        }).sort({ lastAccessedAt: -1 });
+    }
     if (!org || org.userType !== "admin") {
         return res.status(403).json({
             message: "You don't have sufficient permission"
         });
     }
+    OrganizationMember.updateOne({
+        user: req.userId!,
+        organization: org._id
+    }, {
+        lastAccessedAt: new Date()
+    })
     next();
 }
