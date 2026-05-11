@@ -5,7 +5,7 @@ export const createOrganizationSchema = z.object({
 });
 
 export const manageOrganizationSchema = z.object({
-    organizationId: z.string()
+    organizationId: z.string().optional()
 })
 
 export const getOriganizationsSchema = z.object({
