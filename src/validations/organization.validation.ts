@@ -22,3 +22,5 @@ export const addMemberSchema = z.object({
     userId: z.string(),
     userType: z.enum(UserType).default(UserType.user)
 })
+
+export const deleteRemoveUserFromOrgSchema = z.string();
