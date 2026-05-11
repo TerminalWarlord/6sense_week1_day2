@@ -29,7 +29,6 @@ const organizationMemberSchema = new mongoose.Schema({
     },
     invitedAt: {
         type: Date,
-        default: Date.now
     }
 }, {
     timestamps: true
