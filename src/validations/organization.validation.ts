@@ -7,3 +7,8 @@ export const createOrganizationSchema = z.object({
 export const manageOrganizationSchema = z.object({
     organizationId: z.string()
 })
+
+export const getOriganizationsSchema = z.object({
+    offset: z.coerce.number().min(0).default(0),
+    limit: z.coerce.number().min(1).max(10).default(10)
+})
