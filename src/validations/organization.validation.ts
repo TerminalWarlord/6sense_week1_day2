@@ -1,4 +1,5 @@
 import z from "zod";
+import { UserType } from "../types/user.type.js";
 
 export const createOrganizationSchema = z.object({
     name: z.string()
@@ -15,4 +16,9 @@ export const getOriganizationsSchema = z.object({
 
 export const sendInvitationSchema = z.object({
     userId: z.string(),
+})
+
+export const addMemberSchema = z.object({
+    userId: z.string(),
+    userType: z.enum(UserType).default(UserType.user)
 })
