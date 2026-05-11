@@ -3,6 +3,7 @@ import { createOrganizationSchema } from "../../validations/organization.validat
 import z from "zod";
 import { Organization } from "../../models/organization.js";
 import type { CustomRequest } from "../../middlewares/admin.middleware.js";
+import { OrganizationMember } from "../../models/organization_member.js";
 
 export const postCreateOrganization = async (req: CustomRequest, res: Response) => {
     const parsedData = createOrganizationSchema.safeParse(req.body)
@@ -16,6 +17,13 @@ export const postCreateOrganization = async (req: CustomRequest, res: Response) 
         name: parsedData.data.name,
         creator: req.userId!
     });
+    await OrganizationMember.insertOne({
+        organization: org._id,
+        status: "joined",
+        user: req.userId!,
+        userType: "owner",
+        joinedAt: new Date()
+    })
     res.json({
         message: "You've successfully created an organization",
         orgId: org._id
