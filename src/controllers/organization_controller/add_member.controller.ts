@@ -5,6 +5,7 @@ import z from "zod";
 import { OrganizationMember } from "../../models/organization_member.js";
 import { MembershipStatus } from "../../types/user.type.js";
 
+const PORT = process.env.PORT || 3000;
 export const postAddMember = async (req: CustomRequest, res: Response) => {
     const parsedData = addMemberSchema.safeParse({ ...req.body });
     if (!parsedData.success) {
@@ -13,14 +14,15 @@ export const postAddMember = async (req: CustomRequest, res: Response) => {
             error: z.treeifyError(parsedData.error).properties
         })
     }
-    await OrganizationMember.insertOne({
-        user: req.userId!,
+    const orgMember = await OrganizationMember.insertOne({
+        user: parsedData.data.userId,
         organization: req.organizationId!,
         userType: parsedData.data.userType,
         status: MembershipStatus.invited,
         joinedAt: new Date()
     });
     return res.json({
-        message: `User has been added as ${parsedData.data.userType}`
+        message: `User has been added as ${parsedData.data.userType}`,
+        invitation_link: `http://localhost:${PORT}/organization/join/${orgMember._id}`
     })
 }
