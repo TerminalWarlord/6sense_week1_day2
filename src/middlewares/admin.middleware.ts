@@ -1,28 +1,33 @@
 import type { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import type mongoose from "mongoose";
-import { User } from "../models/user.js";
+import mongoose from "mongoose";
+import { manageOrganizationSchema } from "../validations/organization.validation.js";
+import z from "zod";
+import { OrganizationMember } from "../models/organization_member.js";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
 
 export interface CustomRequest extends Request {
     userId?: mongoose.Types.ObjectId
+    organizationId?: mongoose.Types.ObjectId
 }
 export const adminMiddleware = async (req: CustomRequest, res: Response, next: NextFunction) => {
-    const authorization = req.headers.authorization;
-    const token = authorization?.replace("Bearer ", "");
-    if (!authorization || !authorization.includes("Bearer ") || !token) {
-        return res.status(401).json({
-            message: "Unauthorized"
+    const parsedData = manageOrganizationSchema.safeParse({
+        organizationId: req.params.organizationId
+    });
+    if (!parsedData.success) {
+        return res.status(400).json({
+            message: "Invalid input",
+            error: z.treeifyError(parsedData.error).properties
         });
     }
-    const decodedToken = jwt.verify(token, JWT_SECRET) as { userId: mongoose.Types.ObjectId };
-    const user = await User.findById(decodedToken.userId);
-    if (!user || user.userType !== "admin") {
+    const orgId = new mongoose.Types.ObjectId(parsedData.data.organizationId);
+    const org = await OrganizationMember.findOne({
+        organization: orgId,
+        user: req.userId!
+    });
+    if (!org || org.userType !== "admin") {
         return res.status(403).json({
             message: "You don't have sufficient permission"
         });
     }
-    req.userId = user._id;
     next();
 }
