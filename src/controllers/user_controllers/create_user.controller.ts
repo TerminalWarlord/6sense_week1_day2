@@ -48,7 +48,6 @@ export const postCreateUser = async (req: Request, res: Response) => {
         email,
         phone,
         status: "inactive",
-        userType: "user",
         password: hashedPassword
     });
     res.status(201).json({
