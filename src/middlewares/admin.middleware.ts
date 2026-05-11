@@ -12,7 +12,7 @@ export interface CustomRequest extends Request {
 }
 export const adminMiddleware = (userType: UserType) => async (req: CustomRequest, res: Response, next: NextFunction) => {
     const parsedData = manageOrganizationSchema.safeParse({
-        organizationId: req.params.organizationId
+        organizationId: req.body?.organizationId
     });
     if (!parsedData.success) {
         return res.status(400).json({

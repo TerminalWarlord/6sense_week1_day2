@@ -9,7 +9,7 @@ import type { CustomRequest } from "./admin.middleware.js";
 // both admin and owner can do some action
 export const moderatorMiddleware = async (req: CustomRequest, res: Response, next: NextFunction) => {
     const parsedData = manageOrganizationSchema.safeParse({
-        organizationId: req.params.organizationId
+        organizationId: req.body?.organizationId
     });
     if (!parsedData.success) {
         return res.status(400).json({
