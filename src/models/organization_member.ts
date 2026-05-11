@@ -21,6 +21,9 @@ const organizationMemberSchema = new mongoose.Schema({
         enum: ["owner", "admin", "user"],
         default: "user"
     },
+    lastAccessedAt: {
+        type: Date
+    },
     joinedAt: {
         type: Date
     },
