@@ -24,3 +24,5 @@ export const addMemberSchema = z.object({
 })
 
 export const deleteRemoveUserFromOrgSchema = z.string();
+
+export const manageInvitationSchema = z.string();
