@@ -23,11 +23,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    userType: {
-        type: String,
-        enum: ["admin", "user"],
-        default: "user"
-    },
     status: {
         type: String,
         enum: ["active", "inactive", "banned"],
