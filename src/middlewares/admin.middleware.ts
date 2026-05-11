@@ -43,5 +43,6 @@ export const adminMiddleware = async (req: CustomRequest, res: Response, next: N
     }, {
         lastAccessedAt: new Date()
     })
+    req.organizationId = org._id;
     next();
 }
