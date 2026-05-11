@@ -7,10 +7,12 @@ import { UserType } from "../types/user.type.js";
 import { postAddMember } from "../controllers/organization_controller/add_member.controller.js";
 import { deleteRemoveUserFromOrg } from "../controllers/organization_controller/remove_user.controller.js";
 import { deleteOrganization } from "../controllers/organization_controller/delete_organization.controller.js";
+import { postAcceptInvitation } from "../controllers/organization_controller/accept_invitation.controller.js";
 
 export const organizationRouter = Router();
 // User
 organizationRouter.post("/create", userMiddleware, postCreateOrganization);
+organizationRouter.post("/join/:invitationId", userMiddleware, postAcceptInvitation);
 // Admin
 organizationRouter.post("/invite-user", adminMiddleware(UserType.admin), getOrganizations);
 
