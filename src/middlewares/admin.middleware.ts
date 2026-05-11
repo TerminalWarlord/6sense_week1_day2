@@ -22,7 +22,7 @@ export const adminMiddleware = (userType: UserType) => async (req: CustomRequest
     }
     const orgId = new mongoose.Types.ObjectId(parsedData.data.organizationId);
     let org;
-    if (orgId) {
+    if (parsedData.data.organizationId) {
         org = await OrganizationMember.findOne({
             user: req.userId!,
             organization: orgId
