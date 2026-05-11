@@ -27,6 +27,7 @@ export const getUsers = async (req: Request, res: Response) => {
         .select("fname lname email phone status userType")
         .lean();
     return res.json({
-        results: users.slice(0, limit)
+        results: users.slice(0, limit),
+        has_next_page: users.length > limit
     });
 }
