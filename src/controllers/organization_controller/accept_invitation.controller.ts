@@ -17,7 +17,8 @@ export const postAcceptInvitation = async (req: CustomRequest, res: Response) =>
     const invitationId = new mongoose.Types.ObjectId(parsedData.data);
     const orgMember = await OrganizationMember.findOneAndUpdate({
         _id: invitationId,
-        user: req.userId!
+        user: req.userId!,
+        status: "invited"
     }, {
         joinedAt: new Date(),
         status: MembershipStatus.joined,
