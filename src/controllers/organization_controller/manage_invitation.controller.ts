@@ -6,7 +6,9 @@ import mongoose from "mongoose";
 import type { CustomRequest } from "../../middlewares/admin.middleware.js";
 import { MembershipStatus } from "../../types/user.type.js";
 
-export const postAcceptInvitation = async (req: CustomRequest, res: Response) => {
+type InvitationAction = MembershipStatus.joined | MembershipStatus.rejected
+
+export const postAcceptInvitation = (action: InvitationAction) => async (req: CustomRequest, res: Response) => {
     const parsedData = manageInvitationSchema.safeParse(req.params.invitationId);
     if (!parsedData.success) {
         return res.status(400).json({
@@ -21,7 +23,7 @@ export const postAcceptInvitation = async (req: CustomRequest, res: Response) =>
         status: "invited"
     }, {
         joinedAt: new Date(),
-        status: MembershipStatus.joined,
+        status: action,
     });
     console.log({ orgMember, invitationId, org: parsedData.data, userId: req.userId! });
     if (!orgMember) {
