@@ -41,7 +41,7 @@ export const postCreateUser = async (req: Request, res: Response) => {
             message: "User already exist with this email/phone number."
         });
     }
-    const hashedPassword = await bcrypt.hash(password, 5);
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.insertOne({
         fname,
         lname,
