@@ -3,16 +3,17 @@ import { postCreateOrganization } from "../controllers/organization_controller/c
 import { userMiddleware } from "../middlewares/user.middleware.js";
 import { getOrganizations } from "../controllers/organization_controller/get_organizations.controller.js";
 import { adminMiddleware } from "../middlewares/admin.middleware.js";
-import { UserType } from "../types/user.type.js";
+import { MembershipStatus, UserType } from "../types/user.type.js";
 import { postAddMember } from "../controllers/organization_controller/add_member.controller.js";
 import { deleteRemoveUserFromOrg } from "../controllers/organization_controller/remove_user.controller.js";
 import { deleteOrganization } from "../controllers/organization_controller/delete_organization.controller.js";
-import { postAcceptInvitation } from "../controllers/organization_controller/accept_invitation.controller.js";
+import { postAcceptInvitation } from "../controllers/organization_controller/manage_invitation.controller.js";
 
 export const organizationRouter = Router();
 // User
 organizationRouter.post("/create", userMiddleware, postCreateOrganization);
-organizationRouter.post("/join/:invitationId", userMiddleware, postAcceptInvitation);
+organizationRouter.post("/join/:invitationId", userMiddleware, postAcceptInvitation(MembershipStatus.joined));
+organizationRouter.post("/reject/:invitationId", userMiddleware, postAcceptInvitation(MembershipStatus.rejected));
 // Admin
 organizationRouter.post("/invite-user", adminMiddleware(UserType.admin), getOrganizations);
 
