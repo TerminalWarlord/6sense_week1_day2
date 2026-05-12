@@ -15,4 +15,5 @@ export enum MembershipStatus {
     invited = "invited",
     removed = "removed",
     banned = "banned",
+    rejected = "rejected",
 }
