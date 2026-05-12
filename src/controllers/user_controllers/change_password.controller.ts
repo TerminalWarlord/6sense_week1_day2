@@ -8,6 +8,7 @@ import bcrypt from "bcrypt";
 export const patchChangePassword = async (req: CustomRequest, res: Response) => {
     const schema = z.object({
         userId: z.string(),
+        oldPassword: z.string().min(8).max(100),
         password: z.string().min(8).max(100)
     });
     const parsedData = schema.safeParse({
@@ -22,6 +23,7 @@ export const patchChangePassword = async (req: CustomRequest, res: Response) => 
     }
     const {
         password,
+        oldPassword,
         userId
     } = parsedData.data;
     const currentUser = await User.findById(req.userId!);
@@ -30,7 +32,19 @@ export const patchChangePassword = async (req: CustomRequest, res: Response) => 
             message: "You don't have permission to change password for this user"
         })
     }
-    const hashedPassword = await bcrypt.compare(password, currentUser.password);
+    try {
+        const passwordMatches = await bcrypt.compare(oldPassword, currentUser.password);
+        if (!passwordMatches) {
+            throw new Error("Old password is incorrect!");
+        }
+    }
+    catch (err) {
+        return res.status(403).json({
+            message: "Old password is incorrect!",
+        })
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
     await User.updateOne(
         { _id: new mongoose.Types.ObjectId(userId) },
         {
