@@ -13,7 +13,7 @@ const organizationMemberSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["joined", "invited", "banned", "removed"],
+        enum: ["joined", "invited", "banned", "removed", "rejected"],
         default: "invited"
     },
     userType: {
